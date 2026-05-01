@@ -1,0 +1,21 @@
+{
+  "name": "roofclaw-meta-ads-agent",
+  "version": "0.1.0",
+  "description": "RoofClaw Meta Ads Agent: launchpad for marketing-configured RoofClaws to run Meta (Facebook/Instagram) ad campaigns end-to-end with Higgsfield AI creative generation.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "homepage": "https://www.roofclaw.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Roofing-Business-Partner/Roofclaw-MetaAds-Agent.git"
+  },
+  "scripts": {
+    "soul:check": "node scripts/preflight/soul-purpose-check.mjs",
+    "soul:check:example": "node scripts/preflight/soul-purpose-check.mjs templates/MARKETING_SOUL_EXAMPLE.md",
+    "test": "node scripts/preflight/soul-purpose-check.mjs templates/MARKETING_SOUL_EXAMPLE.md"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
