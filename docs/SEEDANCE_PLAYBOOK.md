@@ -3,6 +3,8 @@
 > Source: "Stop Wasting Credits on Seedance 2.0, Do This Instead"
 > Channel: Creating with Conor — uploaded April 26, 2026
 > URL: https://youtu.be/SvhFnN-axJw
+
+> 📌 **Companion read:** [`HIGGSFIELD_LESSONS_LEARNED.md`](./HIGGSFIELD_LESSONS_LEARNED.md) — model-selection matrix and character-casting pipeline distilled from live production. Read first if you have not already; this playbook covers Seedance specifically while that doc covers the broader model ecosystem.
 > Captured: April 30, 2026 by Claudio
 
 ## TL;DR — The 7 things that separate winners from credit-burners
