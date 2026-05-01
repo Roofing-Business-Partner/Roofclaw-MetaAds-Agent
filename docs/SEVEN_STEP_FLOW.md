@@ -24,6 +24,8 @@ A finished ad is not just a video file. Modern Meta delivery rewards content tha
 
 ## Step 1 — Story
 
+**Full process: [`docs/CREATIVE_PROCESS.md`](./CREATIVE_PROCESS.md) — Phases 1 and 2.**
+
 The Marketing RoofClaw drafts an ad concept aligned to:
 
 - The offer (e.g., "free 24-hour roof inspection after a hailstorm")
@@ -31,19 +33,30 @@ The Marketing RoofClaw drafts an ad concept aligned to:
 - The brand voice (`SOUL.md` of the marketing agent)
 - The campaign objective (awareness, traffic, leads, conversions)
 
-Output is a 2–3 sentence creative brief. The agent should propose 3 alternatives and let the owner pick before moving to step 2.
+Do not begin with a brief summary or a bullet list of features. Begin with the **Brief** (Phase 1 of `CREATIVE_PROCESS.md`) and the **Big Idea formula** (Phase 2): Human Truth + Brand Truth = Big Idea.
+
+Output is a Big Idea statement (one sentence) plus 3 concept directions for owner review. The owner picks one concept before moving to step 2.
+
+For brand films (60s+), use the **Hero's Journey** structure from `CREATIVE_PROCESS.md`. For short-form ads (15–30s), use the **3-Act Structure**. The customer is always the hero. RoofClaw is always the mentor. Never the other way around.
 
 ## Step 2 — Storyboard
 
-The agent expands the chosen story into a shot-list:
+**Full process: [`docs/CREATIVE_PROCESS.md`](./CREATIVE_PROCESS.md) — Phases 3, 4, and 5.**
 
-- 5–10 short scenes, each with one visual idea
-- Aspect ratio (9:16 for Reels/Stories, 1:1 for Feed, 16:9 for in-stream)
-- Total duration target (5s, 15s, 30s)
-- On-screen copy beats (headline, CTA, supporting text)
-- Music/voiceover hint
+The agent expands the chosen concept into a full storyboard using the Treatment Template and panel format from `CREATIVE_PROCESS.md`.
 
-Output is a structured JSON or markdown table the agent can hand to step 3.
+Minimum storyboard output:
+
+- Treatment (concept statement, emotional journey, visual world, characters, key scenes, music direction, key line)
+- Panel-by-panel breakdown (time, shot type, camera movement, scene description, VO/dialogue, emotion note)
+- 7-Question Concept Evaluation (all 7 questions answered — reject if more than 2 fail)
+- Keyframe Test (one hero visual + 10 words or fewer that communicate the whole story)
+- Cut guide (hero film / 60s / 30s / 15s panel mapping)
+- Higgsfield prompt extractions for each key panel (ready to hand to Step 3)
+
+Panel counts by duration: 15s = 4–6 panels, 30s = 8–12, 60s = 15–20, 2–3 min = 25–40.
+
+See `CREATIVE_PROCESS.md` for the canonical worked example: *An Ode to the Roofer — They Don't Quit*, a 3-archetype RoofClaw brand film that scored 7/7 on the concept evaluation and is the reference implementation for this step.
 
 ## Step 3 — Images
 
