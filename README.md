@@ -89,8 +89,9 @@ Start here:
 6. [`docs/META_CLI_GOTCHAS.md`](./docs/META_CLI_GOTCHAS.md) — every gotcha we hit, so the next agent does not
 7. [`docs/HIGGSFIELD_SETUP.md`](./docs/HIGGSFIELD_SETUP.md) — OAuth device flow, MCP wiring, workspace selection
 8. [`docs/SEVEN_STEP_FLOW.md`](./docs/SEVEN_STEP_FLOW.md) — the headline creative-to-conversion loop, end-to-end
-9. [`docs/SAFETY_COMPLIANCE.md`](./docs/SAFETY_COMPLIANCE.md) — Meta policy, special ad categories, AI disclosure
-10. [`docs/SOURCES.md`](./docs/SOURCES.md) — primary API references
+9. **[`docs/CREATIVE_PROCESS.md`](./docs/CREATIVE_PROCESS.md) — Super Bowl ad creative process: Brief → Big Idea → Ideation → Treatment → Storyboard (Steps 1–2 in full)**
+10. [`docs/SAFETY_COMPLIANCE.md`](./docs/SAFETY_COMPLIANCE.md) — Meta policy, special ad categories, AI disclosure
+11. [`docs/SOURCES.md`](./docs/SOURCES.md) — primary API references
 
 ## Repository status
 
