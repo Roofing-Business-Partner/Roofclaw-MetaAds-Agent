@@ -229,16 +229,153 @@ If your customer's RoofClaw remembers nothing else from this document, remember:
 
 ---
 
+## 🌍 World Bibles — Single Source of Truth for Multi-Scene Films
+
+When producing a film across 5+ panels with multiple characters, vehicles, and locations, **every prompt becomes a re-statement of the same 50 facts.** Identity drifts. Wardrobe drifts. Lighting drifts. The cure is a JSON `world_bible` file that prompts compose from instead of duplicate.
+
+### Structure (proven)
+
+```jsonc
+{
+  "_meta": { "version": "1.0.0", "project": "Film Name", "purpose": "..." },
+  "tech": {
+    "model_decision_matrix": { "wide_environmental_no_character": "cinematic_studio_2_5", ... },
+    "hf_client": "~/.openclaw/workspace/tools/higgsfield/hf.py",
+    "output_dir": "..."
+  },
+  "characters": {
+    "<name>": {
+      "status": "cast_and_trained | not_cast",
+      "soul_id_v2": "<UUID>",
+      "soul_id_cinematic": "<UUID>",
+      "age": 36,
+      "build": "...",
+      "face": "...",
+      "energy_reference": "<actor reference>",
+      "wardrobe_primary": "...",
+      "wardrobe_rule": "no logos, no brand marks, no text",
+      "casting_dir": "...",
+      "media_ids_file": "..."
+    }
+  },
+  "vehicles": { "<name>": "<full description with STRICT constraints>" },
+  "locations": { "<name>": "<environment + atmosphere>" },
+  "lighting_palettes": {
+    "<name>": {
+      "key_phrase": "...",
+      "use_for": ["<panel_id>"],
+      "discipline": "<rules to enforce>"
+    }
+  },
+  "frame_anchors": { "<panel_id>": { "url": "...", "use_as": "composition reference for ..." } },
+  "anchor_media_marcus": { "A1_headshot_front": "<media_id>", ... },
+  "global_directives": { "color_grade_rule": "...", "negative_prompts_global": "..." }
+}
+```
+
+A template version of this file ships with the repo at [`templates/world_bible.template.json`](../templates/world_bible.template.json). Fork it per project.
+
+**The rule:** when you change a character's wardrobe, change it ONCE in the world bible. Every downstream prompt composes from that field. Drift impossible.
+
+---
+
+## 👥 Sub-Agent Parallelization
+
+Multi-character casting is embarrassingly parallel. Three characters × 28 images each = 84 generations of independent work. Sequentially, that's ~50 minutes. Parallelized via three sub-agents, it's ~16 minutes wall-clock.
+
+**Pattern:**
+1. Build `world_bible.json` with all character specs
+2. Spawn N sub-agents (one per character) with identical task templates pointing at the bible + this lessons doc
+3. Each sub-agent runs Phase 1 (anchor) → Phase 2 (28 references) → Phase 3 (upload) → Phase 4 (contact sheet) independently
+4. Parent agent yields and awaits push-based completion events
+
+**Critical guardrails for each sub-agent task brief:**
+- Cost ceiling (e.g., "200 credits max")
+- Iteration ceiling (e.g., "V3 max per shot")
+- Specific output directory (no collisions)
+- Clear success/failure criteria
+- No web-UI-only steps assumed (Soul ID training stays manual)
+
+The sub-agents inherit the workspace and run the same `hf.py` client — no special infrastructure needed.
+
+---
+
+## 🔬 Production Anomalies (Caught by Sub-Agents — Codify Now)
+
+The Danny casting run flagged three issues that will hit any future casting pipeline. Pre-empt them with prompt guards.
+
+### 1. The Two-Person Bug
+
+**Symptom:** Phase 2 references occasionally render TWO people in a single frame instead of one. Poisons Soul ID training because the model learns "this character looks like a duo."
+
+**Fix:** Include in every Phase 2 prompt: `"exactly one [GENDER] alone in the frame, no other people visible, single subject only"`. Solo-subject explicitness > implicit assumption.
+
+### 2. Logo Bleed-Through ("No Logos" Is Suggestion-Strength)
+
+**Symptom:** Despite "no logos, no brand marks, no text on clothing" instruction, brand logos still appear on wardrobe items the model strongly associates with brands (Carhartt jackets, Levi's jeans, Nike shoes).
+
+**Why:** Higgsfield's training data heavily features branded apparel. "No logos" reduces frequency but does not eliminate. The 28-image averaging during Soul ID training dilutes occasional bleed-through to acceptable noise.
+
+**Fix:** Accept it. Document it. If a specific reference image has a strong logo, regenerate that specific image rather than re-running the whole batch. Soul ID training will average across the set.
+
+### 3. Generation Feed Capped at 24 Recent Items
+
+**Symptom:** During large parallel batches (>24 jobs), some completed jobs do not appear in `show_generations` results because the API response caps at 24 most recent items.
+
+**Fix:** Track job IDs at submission time. Don't rely on `show_generations` to enumerate completed batches — poll each job ID via `job_status` directly. Resubmit individual job IDs that fail to surface.
+
+---
+
+## ⚖️ Soul 2.0 Resolution Cap (Documented Quirk)
+
+**Symptom:** Requesting `"resolution": "2k"` on `soul_2` returns 1344×768 outputs (1080p quality), not the requested 2k.
+
+**Why:** Undocumented model-side cap. Soul 2.0's underlying weights produce best portraits at 1080p; the model silently downsamples 2k requests rather than reject them.
+
+**Fix:** Plan accordingly. Soul 2.0 hero portraits ship at 1080p. If you need true 2k, route the shot through `cinematic_studio_2_5` or `nano_banana_2` instead.
+
+---
+
+## 🚫 The Wide-Reference Trap (Update to Cardinal Rule)
+
+**New finding:** Even when using the correct character model (`soul_2`) for a portrait shot, passing a *wide environmental* reference image as the composition anchor causes the model to fight itself — wide framing wins, character intimacy loses.
+
+**Example from production:** Marcus Panel 2 Cut A (in-truck flashlight medium-close shot). Used `soul_2` correctly, but passed the V1 opening drone wide as `medias`. Output: another wide drone shot, not the medium-close interior we wanted.
+
+**Rule:** When passing composition references to a portrait model:
+- ✅ Pass intimate/medium B-series character context references (e.g., B1 truck cab, B2 truck cab dusk — the casting pipeline's `B*` group)
+- ✅ Pass identity portraits from the A-series (front headshot, 3Q angles)
+- ❌ Do NOT pass wide environmental establishers as composition anchors for intimate shots
+- ❌ Do NOT mix anchor types (e.g., one wide + one tight) — the model averages them poorly
+
+**Mnemonic:** *"Anchor at the framing you want, not the framing you came from."*
+
+---
+
 ## Source
 
-These lessons were derived from the live production of "An Ode to the Roofer" brand-film demo on 2026-04-30, run by Adam Sand (RBP/RoofClaw founder) and the Steward agent. The session produced:
-
-- 28 character reference images for "Marcus" (the lead character)
-- 2 trained Soul IDs (Soul 2.0 and Soul Cinematic)
+### Session 1 (2026-04-30, 19:00–21:00 PDT)
+Live production of "An Ode to the Roofer" brand-film demo, Acts I–II:
+- 28 character reference images for Marcus
+- 2 trained Soul IDs (Soul 2.0 + Soul Cinematic)
 - 4 versions of the opening establisher frame
 - 4 versions of the final mirror frame
 - Confirmed model behavior across `cinematic_studio_2_5`, `nano_banana_2`, `soul_2`, and `soul_cinematic`
 
-Total spend: ~$8 in Higgsfield credits. Total wall-clock: ~2 hours including discovery and iteration.
+Total Session 1 spend: ~$8 in Higgsfield credits. Wall-clock: ~2 hours.
+
+### Session 2 (2026-04-30, 21:00–23:30 PDT)
+Live production continued, Acts III–IV + Meta ads pipeline:
+- Marcus Panel 2 generated (Cuts A + B)
+- Danny full casting pipeline (28 references, uploaded, contact sheet) via parallel sub-agent
+- Carmen full casting pipeline (28 references) via parallel sub-agent
+- World bible JSON pattern proven across 3-character production
+- Real Meta carousel ad drafted in Adam's account (campaign + ad set + creative + ad, all PAUSED)
+- Discovered Meta gotcha #17 (`is_adset_budget_sharing_enabled` required on v22+)
+- Confirmed Soul 2.0 silent resolution cap, wide-reference framing trap, two-person bug, logo bleed, feed-cap-24 issue
+
+Total Session 2 spend: ~$5 Higgsfield + $0 Meta (paused). Wall-clock: ~2.5 hours.
+
+**Combined session total:** ~$13 Higgsfield credits, 5 hours wall-clock, three cast roofers ready for Soul ID training, public lessons doc, drafted Meta carousel ad.
 
 The lessons here represent failed and successful patterns observed in production. They are not theoretical.

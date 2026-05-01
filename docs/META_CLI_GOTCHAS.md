@@ -202,6 +202,49 @@ Error: No business ID available.
 
 **Fix.** Server URL: `https://mcp.facebook.com/ads`. Authentication is via Facebook business login on first connect. Each AI client has its own connector setup UI.
 
+## 17. Campaign creation requires `is_adset_budget_sharing_enabled` on Marketing API v22+
+
+**Gotcha.** Creating a campaign via direct Marketing API call fails with:
+
+```
+{"error":{"message":"Invalid parameter","type":"OAuthException","code":100,"error_subcode":4834011,"error_user_title":"Must specify True or False in is_adset_budget_sharing_enabled field","error_user_msg":"You must specify True or False in the field is_adset_budget_sharing_enabled if you are not using campaign budget. Passing in True will enable your ad sets to share 20% of their budget to optimize overall performance."}}
+```
+
+**Why.** Meta Marketing API v22 made `is_adset_budget_sharing_enabled` a required field on every campaign create call when the campaign is NOT using Campaign Budget Optimization (CBO). Older API versions (v18–v21) defaulted this to `false` silently. The official `meta-ads` CLI v1.0.1 has not yet been updated to set this field automatically when the user provides ad-set-level budgets.
+
+**Fix.** Always include `"is_adset_budget_sharing_enabled": "false"` in the campaign create payload when you are not using CBO. Set to `"true"` only if you explicitly want ad sets in this campaign to share 20% of their budget pool for optimization. The boolean must be a string in form-encoded payloads.
+
+Minimal Python pattern:
+
+```python
+post(f"{AD_ACCOUNT}/campaigns", {
+    "name": "My Campaign",
+    "objective": "OUTCOME_TRAFFIC",
+    "status": "PAUSED",
+    "special_ad_categories": "[]",
+    "is_adset_budget_sharing_enabled": "false",  # ← required on v22+
+    "access_token": ACCESS_TOKEN,
+})
+```
+
+## 18. Long-running lives outlast access tokens
+
+**Gotcha.** Meta access tokens issued from Graph API Explorer typically last 2 hours. A live demo that runs longer than the token's lifetime will hit a `Session has expired` error mid-stream:
+
+```
+{"error":{"message":"Error validating access token: Session has expired on Thursday, 30-Apr-26 21:00:00 PDT...","code":190,"error_subcode":463}}
+```
+
+**Why.** Short-lived user tokens default to ~2 hours. Even a Live-mode app with full ad permissions issues short-lived tokens by default through Graph API Explorer.
+
+**Fix.** Two options:
+
+1. **Exchange for a long-lived token (recommended for production):** Use Meta's `/oauth/access_token?grant_type=fb_exchange_token` flow. Long-lived user tokens last 60 days; system user tokens for business apps can be set to never expire.
+
+2. **Refresh mid-flow (acceptable for live demos):** Generate a new short-lived token from Graph API Explorer, paste it back to the agent. The agent updates `.env` and resumes. We did this during the "Ode to the Roofer" Facebook Live when the original token expired during the second half of the stream.
+
+For any RoofClaw running unattended, use option 1. Option 2 is fine for human-in-the-loop demos.
+
 ---
 
 If you hit a new gotcha, add it here in a PR. Future agents will thank you.

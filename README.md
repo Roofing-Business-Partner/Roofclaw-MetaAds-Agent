@@ -90,10 +90,11 @@ Start here:
 7. [`docs/HIGGSFIELD_SETUP.md`](./docs/HIGGSFIELD_SETUP.md) — OAuth device flow, MCP wiring, workspace selection
 8. [`docs/SEVEN_STEP_FLOW.md`](./docs/SEVEN_STEP_FLOW.md) — the headline creative-to-conversion loop, end-to-end
 9. **[`docs/CREATIVE_PROCESS.md`](./docs/CREATIVE_PROCESS.md) — Super Bowl ad creative process: Brief → Big Idea → Ideation → Treatment → Storyboard (Steps 1–2 in full)**
-10. **[`docs/HIGGSFIELD_LESSONS_LEARNED.md`](./docs/HIGGSFIELD_LESSONS_LEARNED.md) — model-selection matrix, character casting pipeline, MCP gotchas, iteration discipline. Read BEFORE generating anything.**
+10. **[`docs/HIGGSFIELD_LESSONS_LEARNED.md`](./docs/HIGGSFIELD_LESSONS_LEARNED.md) — model-selection matrix, character casting pipeline, MCP gotchas, world bibles, sub-agent parallelization, iteration discipline. Read BEFORE generating anything.**
 11. [`docs/SEEDANCE_PLAYBOOK.md`](./docs/SEEDANCE_PLAYBOOK.md) — Seedance 2.0 multi-shot best practices
-12. [`docs/SAFETY_COMPLIANCE.md`](./docs/SAFETY_COMPLIANCE.md) — Meta policy, special ad categories, AI disclosure
-13. [`docs/SOURCES.md`](./docs/SOURCES.md) — primary API references
+12. **[`templates/world_bible.template.json`](./templates/world_bible.template.json) — fork-able single-source-of-truth structure for any multi-scene brand film**
+13. [`docs/SAFETY_COMPLIANCE.md`](./docs/SAFETY_COMPLIANCE.md) — Meta policy, special ad categories, AI disclosure
+14. [`docs/SOURCES.md`](./docs/SOURCES.md) — primary API references
 
 ## Repository status
 

@@ -1,0 +1,78 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "project": "<FILM_NAME> — replace with your project title",
+    "created": "YYYY-MM-DD",
+    "purpose": "Single source of truth for all visual elements. Every prompt across every scene composes from these fields. Update here, not in individual prompts.",
+    "_template_note": "Fork this file per project. Strip the placeholders, fill in your specifics, save it alongside your generated assets so every sub-agent and every future session reads the same source of truth."
+  },
+
+  "tech": {
+    "model_decision_matrix": {
+      "wide_environmental_no_character": "cinematic_studio_2_5",
+      "wide_with_tiny_character_through_window": "nano_banana_2",
+      "intimate_character_portrait_or_medium_shot": "soul_2",
+      "dramatic_light_portrait": "soul_cinematic",
+      "character_ref_sheet_4_angle": "nano_banana_2"
+    },
+    "lessons_doc": "~/.openclaw/workspace/repos/Roofclaw-MetaAds-Agent/docs/HIGGSFIELD_LESSONS_LEARNED.md",
+    "hf_client": "~/.openclaw/workspace/tools/higgsfield/hf.py",
+    "output_dir": "~/.openclaw/workspace/tools/higgsfield/output/<PROJECT_NAME>/",
+    "casting_pipeline_pattern": "28 references per character: A1-A8 studio identity locks (8) + B1-B8 real-world contexts (8) + C1-C6 expressions (6) + D1-D6 lighting variations (6). See HIGGSFIELD_LESSONS_LEARNED.md."
+  },
+
+  "characters": {
+    "<character_name>": {
+      "status": "not_cast | casting_in_progress | cast_and_uploaded | cast_and_trained",
+      "soul_id_v2": "<UUID after Soul 2.0 training in higgsfield.ai web UI>",
+      "soul_id_cinematic": "<UUID after Soul Cinematic training in higgsfield.ai web UI>",
+      "age": 0,
+      "build": "physical build, height, distinguishing features",
+      "face": "face description, distinguishing marks, age indicators",
+      "energy_reference": "<actor name in <film name>> — e.g. 'Jeremy Renner in The Town'",
+      "wardrobe_primary": "specific items, colors, condition. Avoid logos.",
+      "wardrobe_rule": "no logos, no brand marks, no text on clothing",
+      "casting_dir": "~/.openclaw/workspace/tools/higgsfield/output/<character_name>-casting/",
+      "media_ids_file": "~/.openclaw/workspace/tools/higgsfield/output/<character_name>-casting/media_ids.json",
+      "casting_pipeline_required": "28 reference images: A1-A8 studio identity locks, B1-B8 real-world contexts (relevant to your character's life), C1-C6 expressions (emotional vocabulary the film needs), D1-D6 lighting variations (the lighting arc of the film)"
+    }
+  },
+
+  "vehicles": {
+    "<vehicle_name>": "Year, color, make, model, body style, condition, distinguishing details. Include STRICT constraints to prevent model drift (e.g., 'STRICT: single cab long box only — no Chevy, no crew cab, no extended cab.')"
+  },
+
+  "locations": {
+    "<location_name>": "Environment description, time-of-day characteristics, atmospheric details, distinctive set dressing"
+  },
+
+  "lighting_palettes": {
+    "<palette_name>": {
+      "key_phrase": "Compact prose description suitable to drop into a prompt's lighting section",
+      "use_for": ["<panel_id_1>", "<panel_id_2>"],
+      "discipline": "Specific rules to enforce — e.g., 'the warm practical must be the ONLY warm light source — no other warm spill on truck body or surroundings'"
+    }
+  },
+
+  "frame_anchors": {
+    "<panel_id>": {
+      "url": "https://... (Higgsfield CDN URL of the rendered frame)",
+      "use_as": "composition reference for any subsequent shot that needs to rhyme with this frame",
+      "note": "Description of what makes this frame anchor-worthy"
+    }
+  },
+
+  "anchor_media_ids": {
+    "_note": "Pre-uploaded Higgsfield workspace media IDs from the casting pipeline. Use as composition references via the medias array on cinematic_studio_2_5 / soul_2 generations. Format: [{\"value\": \"<media_id>\", \"role\": \"image\"}]",
+    "_per_character": "Each character should have their own anchor_media_ids block, populated after the casting pipeline uploads their 28 references. The `media_ids.json` file in their casting_dir contains the full mapping."
+  },
+
+  "global_directives": {
+    "color_grade_rule": "raw documentary realism, naturalistic muted palette, NO teal-orange grade, monochromatic with controlled warm point sources, subtle 35mm film grain",
+    "negative_prompts_global": "no other warm light spill, no extra reflections, no logos, no text on clothing or signs unless specifically requested, no other vehicles in frame, no people standing outside unless specified",
+    "aspect_ratio_default": "16:9",
+    "resolution_hero": "2k",
+    "resolution_draft": "1k",
+    "_resolution_caveat": "Soul 2.0 silently caps at 1080p (1344x768) regardless of resolution request. Plan accordingly per HIGGSFIELD_LESSONS_LEARNED.md."
+  }
+}
